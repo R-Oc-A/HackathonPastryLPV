@@ -47,8 +47,12 @@ class SphericalStar(BaseModel):
     theta_step:float
     phi_step:float
 
+class HealpixStar(BaseModel):
+    depth:int
+
 class Mesh(BaseModel):
     Sphere:Optional[SphericalStar]=None
+    HSphere:Optional[HealpixStar]=None
 
 
 class PulstarConfig(BaseModel):

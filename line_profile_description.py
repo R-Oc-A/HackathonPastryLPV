@@ -11,16 +11,23 @@ class JorisGrid(BaseModel):
     log_gravity:float
     filename:str
 
+
 class NadyaGrid(BaseModel):
     temperature:float
     log_gravity:float
     metalicity:float
     filename:str
 
+class EmaGrid(BaseModel):
+    temperature:float
+    log_gravity:float
+    metalicity:float
+    filename:str
 
 class IntensityGrid(BaseModel):
     Joris:Optional[JorisGrid]=None
     Nadya:Optional[NadyaGrid]=None
+    EmaParquet:Optional[EmaGrid]=None
 
 #Wave length range
 class WavelengthRange(BaseModel):
