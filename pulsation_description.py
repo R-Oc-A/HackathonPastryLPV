@@ -7,6 +7,18 @@ from typing import Union,Optional,List
 #----------Pulstar input-----------------
 #----------------------------------------
 
+class NonRot(BaseModel):pass
+class PerturbCor(BaseModel):pass
+class TAR(BaseModel): pass    
+class CenDef(BaseModel):
+    coefficient_expansion:List[float]
+
+class RotationRegime(BaseModel):
+    NonRotating:Optional[NonRot]=None
+    PerturbativeCoriolis:Optional[PerturbCor]=None
+    Tar:Optional[TAR]=None
+    CentrifugalDeformation:Optional[CenDef]=None
+    
 #define pulsation mode
 class Mode(BaseModel):
     l:int
@@ -20,7 +32,6 @@ class Mode(BaseModel):
     rel_dg:float
     phase_rel_dg:float
     rotation_effects:RotationRegime
-    #rotation_effects:str
 
 #define star data
 class StarData(BaseModel):
@@ -62,17 +73,4 @@ class PulstarConfig(BaseModel):
     time_points:TimePoints
     mesh:Mesh
 
-class RotationRegime(BaseModel):
-    NonRotating:Optional[NonRot]=None
-    PerturbativeCoriolis:Optional[PerturbCor]=None
-    Tar:Optional[TAR]=None
-    CentrifugalDeformation:Optional[CenDef]=None
 
-class NonRot(BaseModel):pass
-
-class PerturbCor(BaseModel):pass
-
-class TAR(BaseModel): pass    
-
-class CenDef(BaseModel):
-    coefficient_expansion:List[float]
