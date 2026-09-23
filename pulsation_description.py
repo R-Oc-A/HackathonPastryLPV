@@ -63,10 +63,10 @@ class PulstarConfig(BaseModel):
     mesh:Mesh
 
 class RotationRegime(BaseModel):
-    NonRotating:Optional[NonRot]
-    PerturbativeCoriolis:Optional[PerturbCor]
-    Tar:Optional[TAR]
-    CentrifugalDeformation:Optional[CenDef]
+    NonRotating:Optional[NonRot]=None
+    PerturbativeCoriolis:Optional[PerturbCor]=None
+    Tar:Optional[TAR]=None
+    CentrifugalDeformation:Optional[CenDef]=None
 
 class NonRot(BaseModel):pass
 
