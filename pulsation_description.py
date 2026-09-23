@@ -19,7 +19,8 @@ class Mode(BaseModel):
     phase_rel_dtemp:float
     rel_dg:float
     phase_rel_dg:float
-    rotation_effects:str
+    rotation_effects:RotationRegime
+    #rotation_effects:str
 
 #define star data
 class StarData(BaseModel):
@@ -60,3 +61,18 @@ class PulstarConfig(BaseModel):
     star_data:StarData
     time_points:TimePoints
     mesh:Mesh
+
+class RotationRegime(BaseModel):
+    NonRotating:Optional[NonRot]
+    PerturbativeCoriolis:Optional[PerturbCor]
+    Tar:Optional[TAR]
+    CentrifugalDeformation:Optional[CenDef]
+
+class NonRot(BaseModel):pass
+
+class PerturbCor(BaseModel):pass
+
+class TAR(BaseModel): pass    
+
+class CenDef(BaseModel):
+    coefficient_expansion:List[float]
