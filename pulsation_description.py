@@ -62,9 +62,18 @@ class SphericalStar(BaseModel):
 class HealpixStar(BaseModel):
     depth:int
 
+class TriangulatedStar(BaseModel):
+    triangle_length:float
+
+class DeformedStar(BaseModel):
+    triangle_length:float
+    rotation_frequency:float
+
 class Mesh(BaseModel):
     Sphere:Optional[SphericalStar]=None
     HSphere:Optional[HealpixStar]=None
+    TSphere:Optional[TriangulatedStar]=None
+    DSphere:Optional[DeformedStar]=None
 
 
 class PulstarConfig(BaseModel):

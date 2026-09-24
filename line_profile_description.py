@@ -41,3 +41,17 @@ class ProfileConfig(BaseModel):
     path_to_grids:str
     wavelength_range:WavelengthRange
     intensity_grids:List[IntensityGrid]
+
+#Gaussian Profile config
+class GaussianProfile(BaseModel):
+    sigma:float
+    eq_w:float
+    alpha_w:float
+    zero_point_shift:float = 0.0
+    central_wavelength:float
+    left_wavelength:float
+    right_wavelength:float
+    step:float
+    t_eff:float
+    mass:float
+    radius:float
