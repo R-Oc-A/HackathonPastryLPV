@@ -96,13 +96,21 @@ def extract_flux(wavelength_df:pl.DataFrame,time:float=None,mean=False):
         normal_flux = wavelength_df.with_columns(pl.col("normalized flux").mean().over(pl.col("wavelength")).alias("mean"))
         return normal_flux.filter(pl.col("time").eq(pl.lit(time))).select("mean").to_numpy
     elif mean==False:
-        return wavelength_df.filter(pl.col("time").eq(pl.lit(time))).get_column("normalized flux").to_numpy()
+        return wavelength_df.filter(pl.col("time").eq(pl.lit(time))).get_column("normalized flux")
+
+def extract_wavelengths(wavelength_df:pl.DataFrame,time:float=None):
+    return wavelength_df.unique(subset="wavelength").get_column("wavelength")
+
+    #return wavelength_df.filter(pl.col("time").eq(pl.lit(time))).get_column("wavelength").to_numpy()
+     
+def extract_times(wavelength_df:pl.DataFrame,time:float=None):
+    return wavelength_df.unique(subset="time").get_column("time").to_numpy()
 
 def plot_mean_wavelength(wavelength_df:pl.DataFrame,time:float=None,mean=False):
     pass
 
 def extract_time_points_from_data(wavelength_df:pl.DataFrame):
-    pass
+    return wavelength_df.unique(subset="time").get_column("time")
 
 def extract_wavelength_resolution_from_data(wavelength_df:pl.DataFrame):
     pass

@@ -1,5 +1,8 @@
 #Local files
 grids*
+*bcef.tar.gz*
+*bcep*
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
