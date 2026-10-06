@@ -29,11 +29,17 @@ class IntensityGrid(BaseModel):
     Nadya:Optional[NadyaGrid]=None
     EmaParquet:Optional[EmaGrid]=None
 
-#Wave length range
-class WavelengthRange(BaseModel):
+class UniformWavelengthRange(BaseModel):
     start:float
     end:float
     step:float
+
+class ExplicitWavelengthRange(BaseModel):
+    collection:List[float]
+
+class WavelengthRange(BaseModel):
+    Uniform:Optional[UniformWavelengthRange]=None
+    Explicit:Optional[ExplicitWavelengthRange]=None
 
 #profile_config
 class ProfileConfig(BaseModel):
@@ -49,9 +55,7 @@ class GaussianProfile(BaseModel):
     alpha_w:float
     zero_point_shift:float = 0.0
     central_wavelength:float
-    left_wavelength:float
-    right_wavelength:float
-    step:float
+    wavelength_range:WavelengthRange
     t_eff:float
     mass:float
     radius:float
