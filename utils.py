@@ -15,8 +15,8 @@ from a pulsating star simulated using pastrypy
 def get_max_values(star):
     pass
 
-
-
+def get_profile_input(star):
+    pass
 
 
 # hf_hub_download(repo_id="Ricard0draciR/SolarMetalicityGrid",
