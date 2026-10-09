@@ -8,6 +8,13 @@ This function is used to download the grids that constrain the local variability
 def download_grids(minTemp,maxTemp,minLogG,maxLogG):
     pass
 
+
+'''
+This function defines the four points on the parameter space grids where you may find the grids
+'''
+def define_parameter_space_grids(min):
+    pass
+
 '''
 This function is used to get the maximum and minimum local values of log_g and Temp 
 from a pulsating star simulated using pastrypy
