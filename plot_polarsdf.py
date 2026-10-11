@@ -3,6 +3,8 @@ from pydantic import BaseModel,Field
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Slider
+from matplotlib.animation import FuncAnimation
+from IPython.display import HTML
 
 def plot_slider(df:pl.DataFrame):
     grouped=df.lazy().group_by("time").agg(pl.col("wavelength"),pl.col("normalized flux"))
@@ -118,3 +120,25 @@ def extract_wavelength_resolution_from_data(wavelength_df:pl.DataFrame):
 def compute_chi_square(line_profile:pl.DataFrame,synthetic_profile:pl.DataFrame):
     pass
 
+def animate_wavelength(wavelength_df):
+    plt.ioff() # To avoid showing the plot two times, you can do plt.ion() afterwards
+    fig = plt.figure()
+    ax = plt.axes(xlim=(4551.0, 4555.0), ylim=(0.95, 1.0))
+    line, = ax.plot([], [], lw=3)
+    time = plot_pl.extract_time_points_from_data(wavelength_df=wavelength_gauss_df)
+    wavelength = plot_pl.extract_wavelengths(wavelength_gauss_df,time=time[0])
+    def init():
+        line.set_data([], [])
+        return line,
+    def animate(i):
+        j = i % time.len()
+        #print(j)
+        #x = wavelength
+        #y = plot_pl.extract_flux(wavelength_df=wavelength_df,time=time[j])
+        #x, y = wavelength_df.filter(pl.col('time').is_between(j*0.01, (j+1)*0.01)).select(['wavelength', 'normalized flux']).to_numpy().T
+        x, y = wavelength_gauss_df.filter(pl.col('time').eq(j*0.01)).select(['wavelength', 'normalized flux']).to_numpy().T
+        line.set_data(x, y)
+    return line,
+
+    anim = FuncAnimation(fig, animate, init_func=init, frames=100, interval=4, blit=True); # May take some time
+    HTML(anim.to_jshtml())

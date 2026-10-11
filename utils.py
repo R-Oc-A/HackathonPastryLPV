@@ -3,6 +3,10 @@ from huggingface_hub import hf_hub_download
 import line_profile_description as lpd
 import numpy as np
 import tomli_w
+import pastrypy as psp
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from IPython.display import HTML
 
 temp_array=np.concatenate((
     np.arange(6500,10100,100,dtype=float),
@@ -149,6 +153,14 @@ def extract_extremal_local_values_from_star(star):
     return(min_temp[0],max_temp[0],min_logg[0],max_logg[0])
 
 def make_profile_input(star,wavelength_range):
+    """
+    This function creates a toml configuration file that is usable by the line profile generator program
+    ### Arguments: 
+    * star: A polars data frame that contains the local quantities of the star
+    * wavelength_range: The specified wavelength range to be observed from the spectra
+    ### Returns:
+    * This program returns a string that stores the toml configuration that will be used by the profile program.
+    """
     ### Download and parse de intensity grids
     (temp_min,temp_max,logg_min,logg_max)=extract_extremal_local_values_from_star(star)
     print("Downloading and parsing modelled grids:")
@@ -164,6 +176,53 @@ def make_profile_input(star,wavelength_range):
     prof_config_dict=prof_config.model_dump(exclude_none=True)
     prof_config_string=tomli_w.dumps(prof_config_dict)
     return prof_config_string
+
+
+#--------------------------------------------------
+#------Utils for triangulation visualization-------
+#--------------------------------------------------
+def make_triangulation_sphere(length):
+    sphere_points=psp.sphere_triangulation_points(length)
+    sphere_triangles=psp.sphere_triangulation_triangles(length)
+    return(sphere_points,sphere_triangles)
+
+def make_roche_model_sphere(rotation_frequency,length):
+    roche_points = psp.roche_deformed_triangulation_points(rotation_frequency,length)
+    roche_triangles = psp.roche_deformed_triangulation_triangles(rotation_frequency,length)
+    return (roche_points,roche_triangles)
+
+def plot_contour_roche_model():
+    omegas = [0.0,0.2,0.4,0.5,0.544]
+    colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#bbaaff']
+    
+    x=np.linspace(-3,3,600)
+    y=np.linspace(-3,3,600)
+    X,Y=np.meshgrid(x,y)
+    R=np.sqrt(X**2 +Y**2)
+    R=np.where(R==0,1e-6,R)
+    
+    fig, ax =plt.subplots(figsize=(8,8))
+    
+    for index,omega in enumerate(omegas):
+        color=colors[index]
+        Z =1.0/R +0.5*(omega**2)*(X**2)-1.0
+        ax.contour(X,Y,Z, levels=[0], colors=[color],linewidths=2)
+        ax.plot(color==color,linewidth=2,label=f'$\omega/\omega_{r'C'}$={omega*np.sqrt(27.0/8.0):.3f}')
+        
+    ax.set_aspect('equal')
+    ax.axhline(0,color='gray',linewidth=0.8,linestyle='--')
+    ax.axvline(0,color='gray',linewidth=0.8,linestyle='--')
+    ax.set_title(
+        r'Contours: $\frac{1}{r}+\frac{1}{2}\omega^2 (r\sin\theta )^2=1$',
+        fontsize=14,
+    )
+    ax.set_xlabel('$x$',fontsize=12)
+    ax.set_ylabel('$z$',fontsize=12,rotation='horizontal')
+    ax.grid(False, linestyle=':',alpha=0.6)
+    ax.legend(loc='upper right',fontsize=11)
+    plt.xlim(-3,3)
+    plt.ylim(-3,3)
+    plt.show()
 
 
 

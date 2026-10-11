@@ -8,6 +8,7 @@ grayscale
 *.png
 *.gif
 content/*
+HackathonPastryLPV/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -24,7 +24,7 @@ class Mode(BaseModel):
     l:int
     m:int
     rel_dr:float
-    k:float
+    k:float=0.05
     frequency:float
     phase_offset:float
     rel_dtemp:float

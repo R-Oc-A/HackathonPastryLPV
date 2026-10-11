@@ -43,7 +43,7 @@ class WavelengthRange(BaseModel):
 
 #profile_config
 class ProfileConfig(BaseModel):
-    max_velocity:float
+    max_velocity:float=3.0e2
     path_to_grids:str
     wavelength_range:WavelengthRange
     intensity_grids:List[IntensityGrid]
