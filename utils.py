@@ -2,6 +2,7 @@ import polars as pl
 from huggingface_hub import hf_hub_download
 import line_profile_description as lpd
 import numpy as np
+import tomli_w
 
 temp_array=np.concatenate((
     np.arange(6500,10100,100,dtype=float),
@@ -40,6 +41,8 @@ def define_parameter_space_grids(
         logg_max):
     """
     This function defines the four points on the parameter space grids where you may find the grids
+    Constructs the logical definitions usable for the profiler program 
+    and downloads the requested model grids if they are not locally in the machine already.
     ### Arguments:
     * temp_min: Minimum value of the effective temperature of the pulsation
     * temp_max: Maximum value of the effective temperature of the pulsation
@@ -55,7 +58,9 @@ def define_parameter_space_grids(
         make_grid_name(grid_maxT,grid_minlogg),
         make_grid_name(grid_maxT,grid_maxlogg),
     ]
-    
+
+    download_grids(grid_names)
+
     grid1 = lpd.IntensityGrid(
         EmaParquet=lpd.EmaGrid(temperature=grid_minT,
                                log_gravity=grid_minlogg,
@@ -72,7 +77,7 @@ def define_parameter_space_grids(
                                metalicity=0.0,
                                filename=grid_names[2]))
     grid4 = lpd.IntensityGrid(
-        EmaParquet=lpd.EmaGrid(temperature=grid_minT,
+        EmaParquet=lpd.EmaGrid(temperature=grid_maxT,
                                log_gravity=grid_maxlogg,
                                metalicity=0.0,
                                filename=grid_names[3]))
@@ -136,8 +141,30 @@ def get_coordinates_parameter_space(
 
 
 
-def get_profile_input(star):
-    pass
+def extract_extremal_local_values_from_star(star):
+    max_temp=star.select(pl.max("temperature")).to_numpy()[0]
+    min_temp=star.select(pl.min("temperature")).to_numpy()[0]
+    max_logg=star.select(pl.max("log gravity")).to_numpy()[0]
+    min_logg=star.select(pl.min("log gravity")).to_numpy()[0]
+    return(min_temp[0],max_temp[0],min_logg[0],max_logg[0])
+
+def make_profile_input(star,wavelength_range):
+    ### Download and parse de intensity grids
+    (temp_min,temp_max,logg_min,logg_max)=extract_extremal_local_values_from_star(star)
+    print("Downloading and parsing modelled grids:")
+    (grid1,grid2,grid3,grid4)=define_parameter_space_grids(temp_min,temp_max,logg_min,logg_max)
+    path_to_grids = f"content/grids/SolarMetalicity/"
+
+    prof_config=lpd.ProfileConfig(
+        max_velocity=1.0e2,
+        path_to_grids=path_to_grids,
+        wavelength_range=wavelength_range,
+        intensity_grids=[grid1,grid2,grid3,grid4]
+    )
+    prof_config_dict=prof_config.model_dump(exclude_none=True)
+    prof_config_string=tomli_w.dumps(prof_config_dict)
+    return prof_config_string
+
 
 
 # hf_hub_download(repo_id="Ricard0draciR/SolarMetalicityGrid",
