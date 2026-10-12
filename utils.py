@@ -166,7 +166,7 @@ def make_profile_input(star,wavelength_range):
     print("Downloading and parsing modelled grids:")
     (grid1,grid2,grid3,grid4)=define_parameter_space_grids(temp_min,temp_max,logg_min,logg_max)
     path_to_grids = f"content/grids/SolarMetalicity/"
-
+    print("Done")
     prof_config=lpd.ProfileConfig(
         max_velocity=1.0e2,
         path_to_grids=path_to_grids,
@@ -175,6 +175,7 @@ def make_profile_input(star,wavelength_range):
     )
     prof_config_dict=prof_config.model_dump(exclude_none=True)
     prof_config_string=tomli_w.dumps(prof_config_dict)
+    print("Creating configuration toml for the profile program---Complete!")
     return prof_config_string
 
 
