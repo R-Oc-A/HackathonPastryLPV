@@ -62,7 +62,6 @@ def define_parameter_space_grids(
         make_grid_name(grid_maxT,grid_minlogg),
         make_grid_name(grid_maxT,grid_maxlogg),
     ]
-
     download_grids(grid_names)
 
     grid1 = lpd.IntensityGrid(
